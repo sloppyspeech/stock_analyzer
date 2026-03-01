@@ -36,6 +36,31 @@
       --text: #e8ecf0;
       --muted: #6b8299;
       --muted2: #4a6070;
+      --btn-text: #000;
+    }
+
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface2: #f1f5f9;
+      --surface3: #e2e8f0;
+      --border: #cbd5e1;
+      --border2: #94a3b8;
+      --accent: #0284c7;
+      --accent2: #6d28d9;
+      --green: #16a34a;
+      --red: #dc2626;
+      --amber: #d97706;
+      --text: #0f172a;
+      --muted: #475569;
+      --muted2: #64748b;
+      --btn-text: #fff;
+    }
+
+    [data-theme="light"] body::before {
+      background-image:
+        linear-gradient(rgba(2, 132, 199, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(2, 132, 199, 0.05) 1px, transparent 1px);
     }
 
     * {
@@ -179,7 +204,7 @@
 
     .btn-primary {
       background: linear-gradient(135deg, #0099cc, var(--accent));
-      color: #000;
+      color: var(--btn-text);
     }
 
     .btn-primary:hover {
@@ -342,7 +367,7 @@
     .ai-text {
       font-size: 14px;
       line-height: 1.8;
-      color: #c8d8e8;
+      color: var(--text);
     }
 
     .ai-text h1 {
@@ -379,7 +404,7 @@
     }
 
     .ai-text em {
-      color: #a0b8cc;
+      color: var(--muted);
       font-style: italic;
     }
 
@@ -418,7 +443,7 @@
       background: none;
       padding: 0;
       font-size: 13px;
-      color: #c8d8e8;
+      color: var(--text);
     }
 
     .ai-text hr {
@@ -457,7 +482,7 @@
       margin: 12px 0;
       background: rgba(0, 229, 255, 0.04);
       border-radius: 0 6px 6px 0;
-      color: #a0b8cc;
+      color: var(--muted);
     }
 
     .ai-text a {
@@ -652,6 +677,12 @@
       }
     }
   </style>
+  <script>
+      (function () {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      })();
+  </script>
 </head>
 
 <body>
@@ -701,6 +732,23 @@
       </div>
 
       <div style="display:flex;align-items:center;gap:12px;">
+        <button id="theme-toggle" class="btn btn-secondary" onclick="toggleTheme()"
+          style="padding:8px; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center;"
+          title="Toggle Theme">
+          <svg id="theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <!-- Default icon -->
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </svg>
+        </button>
         <div
           style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(0,230,118,0.08);border:1px solid rgba(0,230,118,0.2);border-radius:99px;">
           <div class="pulse-dot"></div>
@@ -3420,6 +3468,30 @@
       document.getElementById('watchlist-modal').addEventListener('click', function (e) {
         if (e.target === this) closeModal();
       });
+
+      // Theme toggle functionality
+      function toggleTheme() {
+        const doc = document.documentElement;
+        const currentTheme = doc.getAttribute('data-theme') || 'dark';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        doc.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+      }
+
+      function updateThemeIcon(theme) {
+        const icon = document.getElementById('theme-icon');
+        if (!icon) return;
+        if (theme === 'light') {
+          icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+        } else {
+          icon.innerHTML = '<circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />';
+        }
+      }
+
+      // Initialize state on render
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      updateThemeIcon(savedTheme);
     </script>
 </body>
 
